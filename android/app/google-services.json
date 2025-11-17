@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "210243832101",
+    "project_id": "vapeme-61377",
+    "storage_bucket": "vapeme-61377.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:210243832101:android:5e851204bb92ca4ee432cc",
+        "android_client_info": {
+          "package_name": "com.example.vape_me"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAakTott1RVka9StY-2tO9b0OgNC-CDDmA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
