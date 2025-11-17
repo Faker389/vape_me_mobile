@@ -208,7 +208,7 @@ class ProfileScreen extends StatelessWidget {
                     _buildModernMenuItem(
                       context,
                       icon: Icons.privacy_tip_outlined,
-                      title: 'Polityka prywatności',
+                      title: 'Regulamin i Polityka prywatności',
                       subtitle: 'Zobacz naszą polityke prywatności',
                       gradient: const LinearGradient(
                         colors: [Color(0xFFfa709a), Color(0xFFfee140)],

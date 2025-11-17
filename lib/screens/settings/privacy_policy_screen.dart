@@ -174,7 +174,7 @@ static Future<bool> checkUser(AuthProvider authProvider)async{
                   _buildSection(
                     '9. Kontakt',
                     'W razie pytań dotyczących Polityki Prywatności, skontaktuj się z nami:\n\n'
-                    'Email: prywatnosc@zappka.pl\n'
+                    'Email: vapeme123321@gmail.coml\n'
                     'Telefon: +48 123 456 789',
                   ),
                   

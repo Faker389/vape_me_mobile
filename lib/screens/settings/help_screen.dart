@@ -129,9 +129,9 @@ static Future<bool> checkUser(AuthProvider authProvider)async{
                     context,
                     icon: Icons.email,
                     title: 'Email',
-                    subtitle: 'pomoc@zappka.pl',
+                    subtitle: 'vapeme123321@gmail.com',
                     color: const Color(0xFF667eea),
-                    onTap: () => _launchEmail('pomoc@zappka.pl'),
+                    onTap: () => _launchEmail('vapeme123321@gmail.com'),
                   ),
                   const SizedBox(height: 12),
                   
