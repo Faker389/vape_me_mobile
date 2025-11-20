@@ -43,6 +43,9 @@ class CouponModel {
   @HiveField(12)
   final int minimalPrice;
 
+  @HiveField(13)
+  final int? discountAmount;
+
   CouponModel({
     required this.id,
     required this.title,
@@ -53,6 +56,7 @@ class CouponModel {
     required this.isDiscount,
     this.isUsed = false,
     this.usedDate,
+    this.discountAmount=0,
     this.minimalPrice=0,
     required this.category,
     this.imageUrl,
@@ -88,6 +92,7 @@ class CouponModel {
       imageUrl: json['imageUrl'],
       rewardID: json["rewardID"]??"",
       minimalPrice: json['minimalPrice'] ?? 0,
+      discountAmount: json['discountAmount'] ?? 0,
     );
   }
 
@@ -107,6 +112,7 @@ class CouponModel {
       'imageUrl': imageUrl,
       'rewardID': rewardID,
       'minimalPrice': minimalPrice,
+      'discountAmount': discountAmount,
     };
   }
 
@@ -134,6 +140,7 @@ class CouponModel {
       pointsCost: pointsCost ?? this.pointsCost,
       claimedDate: claimedDate ?? this.claimedDate,
       isDiscount:isDiscount,
+      discountAmount: discountAmount,
       expiryDate: expiryDate ?? this.expiryDate,
       isUsed: isUsed ?? this.isUsed,
       usedDate: usedDate ?? this.usedDate,

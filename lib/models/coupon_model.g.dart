@@ -10,32 +10,34 @@ class CouponModelAdapter extends TypeAdapter<CouponModel> {
   @override
   final int typeId = 3;
 
- @override
-CouponModel read(BinaryReader reader) {
-  final numOfFields = reader.readByte();
-  final fields = <int, dynamic>{
-    for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
-  };
-  return CouponModel(
-    id: fields[0] as String,
-    title: fields[1] as String,
-    description: fields[2] as String,
-    pointsCost: fields[3] as int,
-    claimedDate: fields[4] as DateTime,
-    expiryDate: fields[5] as DateTime,
-    isDiscount: fields[11] as bool? ?? false,  // ✅ default to false if null
-    isUsed: fields[6] as bool? ?? false,       // ✅ default to false if null
-    usedDate: fields[7] as DateTime?,
-    category: fields[8] as String,
-    imageUrl: fields[9] as String?,
-    rewardID: fields[10] as String,
-  );
-}
+  @override
+  CouponModel read(BinaryReader reader) {
+    final numOfFields = reader.readByte();
+    final fields = <int, dynamic>{
+      for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
+    };
+    return CouponModel(
+      id: fields[0] as String,
+      title: fields[1] as String,
+      description: fields[2] as String,
+      pointsCost: fields[3] as int,
+      claimedDate: fields[4] as DateTime,
+      expiryDate: fields[5] as DateTime,
+      isDiscount: fields[11] as bool,
+      isUsed: fields[6] as bool,
+      usedDate: fields[7] as DateTime?,
+      discountAmount: fields[13] as int?,
+      minimalPrice: fields[12] as int,
+      category: fields[8] as String,
+      imageUrl: fields[9] as String?,
+      rewardID: fields[10] as String,
+    );
+  }
 
   @override
   void write(BinaryWriter writer, CouponModel obj) {
     writer
-      ..writeByte(12)
+      ..writeByte(14)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -59,7 +61,11 @@ CouponModel read(BinaryReader reader) {
       ..writeByte(10)
       ..write(obj.rewardID)
       ..writeByte(11)
-      ..write(obj.isDiscount);
+      ..write(obj.isDiscount)
+      ..writeByte(12)
+      ..write(obj.minimalPrice)
+      ..writeByte(13)
+      ..write(obj.discountAmount);
   }
 
   @override

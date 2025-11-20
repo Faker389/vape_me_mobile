@@ -60,36 +60,44 @@ class ProfileScreen extends StatelessWidget {
           const SizedBox(width: 8),
         ],
       ),
-      body: Stack(
-        children: [
-          _buildAnimatedBackground(),
-          Consumer<AuthProvider>(
-            builder: (context, authProvider, child) {
-              // Fix: Properly handle async checkUser
-              checkUser(authProvider).then((isValid) {
-                if (!isValid && context.mounted) {
-                  Future.delayed(Duration.zero, () {
-                    if (context.mounted) {
-                      Navigator.of(context).pushReplacement(
-                        MaterialPageRoute(
-                          builder: (context) => const WelcomeScreen(),
-                        ),
-                      );
-                    }
-                  });
+        body: Stack(
+  children: [
+    _buildAnimatedBackground(),
+    Consumer<AuthProvider>(
+      builder: (context, authProvider, child) {
+        return FutureBuilder<bool>(
+          future: checkUser(authProvider),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(
+                child: CircularProgressIndicator(
+                  color: AppTheme.primaryPurple,
+                ),
+              );
+            }
+
+            if (snapshot.hasData && !snapshot.data!) {
+              Future.microtask(() {
+                if (context.mounted) {
+                  Navigator.of(context).pushReplacement(
+                    MaterialPageRoute(
+                      builder: (context) => const WelcomeScreen(),
+                    ),
+                  );
                 }
               });
+            }
 
-              final user = UserStorage.getUser();
-              
-              if (user == null) {
-                return const Center(
-                  child: CircularProgressIndicator(
-                    color: AppTheme.primaryPurple,
-                  ),
-                );
-              }
+            final user = UserStorage.getUser();
+            if (user == null) {
+              return const Center(
+                child: CircularProgressIndicator(
+                  color: AppTheme.primaryPurple,
+                ),
+              );
+            }
 
+           
               return SingleChildScrollView(
                 padding: const EdgeInsets.only(
                     top: 100, left: 16, right: 16, bottom: 16),
@@ -228,10 +236,13 @@ class ProfileScreen extends StatelessWidget {
                   ],
                 ),
               );
-            },
-          ),
-        ],
-      ),
+            
+          },
+        );
+      },
+    ),
+  ],
+),
     );
   }
 
