@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:vape_me/providers/user_provider.dart';
 import 'package:vape_me/screens/coupons/active_coupons_screen.dart';
 
 import '../../providers/auth_provider.dart';
@@ -13,7 +14,7 @@ import '../settings/help_screen.dart';
 import '../settings/privacy_policy_screen.dart';
 import '../points/transfer_points_screen.dart';
 
-class ProfileScreen extends StatelessWidget {
+class ProfileScreen extends StatefulWidget {
   const ProfileScreen({Key? key}) : super(key: key);
 
   static Future<bool> checkUser(AuthProvider authProvider) async {
@@ -26,6 +27,27 @@ class ProfileScreen extends StatelessWidget {
       return true;
     } else {
       return true;
+    }
+  }
+
+  @override
+  State<ProfileScreen> createState() => _ProfileScreenState();
+}
+
+class _ProfileScreenState extends State<ProfileScreen> {
+  final GlobalKey<RefreshIndicatorState> _refreshKey = GlobalKey();
+
+  Future<void> _refreshAllData() async {
+    final userProvider = Provider.of<UserProvider>(context, listen: false);
+
+    await Future.wait([
+      userProvider.refreshUserData(),
+      userProvider.loadTransactions(),
+    ]);
+
+    // Reload user from storage after refresh
+    if (mounted) {
+      setState(() {});
     }
   }
 
@@ -60,189 +82,200 @@ class ProfileScreen extends StatelessWidget {
           const SizedBox(width: 8),
         ],
       ),
-        body: Stack(
-  children: [
-    _buildAnimatedBackground(),
-    Consumer<AuthProvider>(
-      builder: (context, authProvider, child) {
-        return FutureBuilder<bool>(
-          future: checkUser(authProvider),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Center(
-                child: CircularProgressIndicator(
-                  color: AppTheme.primaryPurple,
-                ),
-              );
-            }
+      body: Stack(
+        children: [
+          _buildAnimatedBackground(),
+          Consumer<AuthProvider>(
+            builder: (context, authProvider, child) {
+              return FutureBuilder<bool>(
+                future: ProfileScreen.checkUser(authProvider),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(
+                      child: CircularProgressIndicator(
+                        color: AppTheme.primaryPurple,
+                      ),
+                    );
+                  }
 
-            if (snapshot.hasData && !snapshot.data!) {
-              Future.microtask(() {
-                if (context.mounted) {
-                  Navigator.of(context).pushReplacement(
-                    MaterialPageRoute(
-                      builder: (context) => const WelcomeScreen(),
+                  if (snapshot.hasData && !snapshot.data!) {
+                    Future.microtask(() {
+                      if (context.mounted) {
+                        Navigator.of(context).pushReplacement(
+                          MaterialPageRoute(
+                            builder: (context) => const WelcomeScreen(),
+                          ),
+                        );
+                      }
+                    });
+                  }
+
+                  final user = UserStorage.getUser();
+                  if (user == null) {
+                    return const Center(
+                      child: CircularProgressIndicator(
+                        color: AppTheme.primaryPurple,
+                      ),
+                    );
+                  }
+
+                  return RefreshIndicator(
+                    key: _refreshKey,
+                    onRefresh: _refreshAllData,
+                    child: SingleChildScrollView(
+                      physics: const AlwaysScrollableScrollPhysics(),
+                      padding: const EdgeInsets.only(
+                          top: 100, left: 16, right: 16, bottom: 16),
+                      child: Column(
+                        children: [
+                          _buildModernProfileCard(context, user),
+                          const SizedBox(height: 24),
+                          _buildModernMenuItem(
+                            context,
+                            icon: Icons.history,
+                            title: 'Historia transakcji',
+                            subtitle: 'Zobacz swoje transakcje',
+                            gradient: const LinearGradient(
+                              colors: [Color(0xFF667eea), Color(0xFF764ba2)],
+                            ),
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      const PointsHistoryScreen(),
+                                ),
+                              );
+                            },
+                          ),
+                          const SizedBox(height: 12),
+                          _buildModernMenuItem(
+                            context,
+                            icon: Icons.edit_outlined,
+                            title: 'Edytuj profil',
+                            subtitle: 'Zaktualizuj swoje informacje',
+                            gradient: const LinearGradient(
+                              colors: [Color(0xFF43e97b), Color(0xFF38f9d7)],
+                            ),
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      const EditProfileScreen(),
+                                ),
+                              );
+                            },
+                          ),
+                          const SizedBox(height: 12),
+                          _buildModernMenuItem(
+                            context,
+                            icon: Icons.card_giftcard,
+                            title: 'Aktywne Kupony',
+                            subtitle: 'Zobacz swoje odebrane kupony',
+                            gradient: const LinearGradient(
+                              colors: [Color(0xFFf093fb), Color(0xFFf5576c)],
+                            ),
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      const ActiveCouponsScreen(),
+                                ),
+                              );
+                            },
+                          ),
+                          const SizedBox(height: 12),
+                          _buildModernMenuItem(
+                            context,
+                            icon: Icons.notifications_outlined,
+                            title: 'Powiadomienia',
+                            subtitle:
+                                'Ustaw preferencje dotyczącze powiadomień',
+                            gradient: const LinearGradient(
+                              colors: [Color(0xFF4facfe), Color(0xFF00f2fe)],
+                            ),
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      const NotificationsScreen(),
+                                ),
+                              );
+                            },
+                          ),
+                          const SizedBox(height: 12),
+                          _buildModernMenuItem(
+                            context,
+                            icon: Icons.swap_horiz,
+                            title: 'Transfer buszków',
+                            subtitle:
+                                'Przekaż punkty innym użytkownikom',
+                            gradient: const LinearGradient(
+                              colors: [Color(0xFFfa709a), Color(0xFFfee140)],
+                            ),
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      const TransferPointsScreen(),
+                                ),
+                              );
+                            },
+                          ),
+                          const SizedBox(height: 12),
+                          _buildModernMenuItem(
+                            context,
+                            icon: Icons.help_outline,
+                            title: 'Pomoc',
+                            subtitle: 'Zgłoś sie do naszej pomocy',
+                            gradient: const LinearGradient(
+                              colors: [Color(0xFF43e97b), Color(0xFF38f9d7)],
+                            ),
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => const HelpScreen(),
+                                ),
+                              );
+                            },
+                          ),
+                          const SizedBox(height: 12),
+                          _buildModernMenuItem(
+                            context,
+                            icon: Icons.privacy_tip_outlined,
+                            title: 'Regulamin i Polityka prywatności',
+                            subtitle: 'Zobacz naszą polityke prywatności',
+                            gradient: const LinearGradient(
+                              colors: [Color(0xFFfa709a), Color(0xFFfee140)],
+                            ),
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      const PrivacyPolicyScreen(),
+                                ),
+                              );
+                            },
+                          ),
+                          const SizedBox(height: 32),
+                          _buildSignOutButton(context),
+                          const SizedBox(height: 16),
+                        ],
+                      ),
                     ),
                   );
-                }
-              });
-            }
-
-            final user = UserStorage.getUser();
-            if (user == null) {
-              return const Center(
-                child: CircularProgressIndicator(
-                  color: AppTheme.primaryPurple,
-                ),
+                },
               );
-            }
-
-           
-              return SingleChildScrollView(
-                padding: const EdgeInsets.only(
-                    top: 100, left: 16, right: 16, bottom: 16),
-                child: Column(
-                  children: [
-                    _buildModernProfileCard(context, user),
-                    const SizedBox(height: 24),
-                    _buildModernMenuItem(
-                      context,
-                      icon: Icons.history,
-                      title: 'Historia transakcji',
-                      subtitle: 'Zobacz swoje transakcje',
-                      gradient: const LinearGradient(
-                        colors: [Color(0xFF667eea), Color(0xFF764ba2)],
-                      ),
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const PointsHistoryScreen(),
-                          ),
-                        );
-                      },
-                    ),
-                    const SizedBox(height: 12),
-                    _buildModernMenuItem(
-                      context,
-                      icon: Icons.edit_outlined,
-                      title: 'Edytuj profil',
-                      subtitle: 'Zaktualizuj swoje informacje',
-                      gradient: const LinearGradient(
-                        colors: [Color(0xFF43e97b), Color(0xFF38f9d7)],
-                      ),
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const EditProfileScreen(),
-                          ),
-                        );
-                      },
-                    ),
-                    const SizedBox(height: 12),
-                    _buildModernMenuItem(
-                      context,
-                      icon: Icons.card_giftcard,
-                      title: 'Aktywne Kupony',
-                      subtitle: 'Zobacz swoje odebrane kupony',
-                      gradient: const LinearGradient(
-                        colors: [Color(0xFFf093fb), Color(0xFFf5576c)],
-                      ),
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const ActiveCouponsScreen(),
-                          ),
-                        );
-                      },
-                    ),
-                    const SizedBox(height: 12),
-                    _buildModernMenuItem(
-                      context,
-                      icon: Icons.notifications_outlined,
-                      title: 'Powiadomienia',
-                      subtitle: 'Ustaw preferencje dotyczącze powiadomień',
-                      gradient: const LinearGradient(
-                        colors: [Color(0xFF4facfe), Color(0xFF00f2fe)],
-                      ),
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const NotificationsScreen(),
-                          ),
-                        );
-                      },
-                    ),
-                    const SizedBox(height: 12),
-                    _buildModernMenuItem(
-                      context,
-                      icon: Icons.swap_horiz,
-                      title: 'Transfer buszków',
-                      subtitle: 'Przekaż punkty innym użytkownikom',
-                      gradient: const LinearGradient(
-                        colors: [Color(0xFFfa709a), Color(0xFFfee140)],
-                      ),
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const TransferPointsScreen(),
-                          ),
-                        );
-                      },
-                    ),
-                    const SizedBox(height: 12),
-                    _buildModernMenuItem(
-                      context,
-                      icon: Icons.help_outline,
-                      title: 'Pomoc',
-                      subtitle: 'Zgłoś sie do naszej pomocy',
-                      gradient: const LinearGradient(
-                        colors: [Color(0xFF43e97b), Color(0xFF38f9d7)],
-                      ),
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const HelpScreen(),
-                          ),
-                        );
-                      },
-                    ),
-                    const SizedBox(height: 12),
-                    _buildModernMenuItem(
-                      context,
-                      icon: Icons.privacy_tip_outlined,
-                      title: 'Regulamin i Polityka prywatności',
-                      subtitle: 'Zobacz naszą polityke prywatności',
-                      gradient: const LinearGradient(
-                        colors: [Color(0xFFfa709a), Color(0xFFfee140)],
-                      ),
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const PrivacyPolicyScreen(),
-                          ),
-                        );
-                      },
-                    ),
-                    const SizedBox(height: 32),
-                    _buildSignOutButton(context),
-                    const SizedBox(height: 16),
-                  ],
-                ),
-              );
-            
-          },
-        );
-      },
-    ),
-  ],
-),
+            },
+          ),
+        ],
+      ),
     );
   }
 
@@ -659,11 +692,9 @@ class ProfileScreen extends StatelessWidget {
           ),
           ElevatedButton(
             onPressed: () async {
-              // Close dialog first
               Navigator.of(dialogContext).pop();
 
               try {
-                // Show loading indicator
                 showDialog(
                   context: context,
                   barrierDismissible: false,
@@ -674,18 +705,14 @@ class ProfileScreen extends StatelessWidget {
                   ),
                 );
 
-                // Sign out from Firebase
-                await Provider.of<AuthProvider>(context, listen: false).signOut();
-
-                // Clear Hive storage
+                await Provider.of<AuthProvider>(context, listen: false)
+                    .signOut();
                 await UserStorage.clearUser();
 
-                // Close loading indicator
                 if (context.mounted) {
                   Navigator.of(context).pop();
                 }
 
-                // Navigate to welcome screen and clear all routes
                 if (context.mounted) {
                   Navigator.of(context).pushAndRemoveUntil(
                     MaterialPageRoute(
@@ -695,12 +722,10 @@ class ProfileScreen extends StatelessWidget {
                   );
                 }
               } catch (e) {
-                // Close loading if still showing
                 if (context.mounted) {
                   Navigator.of(context).pop();
                 }
 
-                // Show error message
                 if (context.mounted) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(

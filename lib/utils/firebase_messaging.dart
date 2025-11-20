@@ -198,17 +198,14 @@ static final serviceAccount = {
       required String phoneNumber
     }
   )async{
-    if (user == null) {
-    print("User not found, skipping notification.");
-    return;
-  }
-  if(user!.notifications==null){
-    return;
-  }
+    
        final docSnapshot = await _db.collection('users').doc(phoneNumber).get();
       String fcmToken;
       if (docSnapshot.exists) {
         final user = UserModel.fromMap(docSnapshot.data() as Map<String, dynamic>);
+  if(user.notifications==null){
+    return;
+  }
         if(user.notifications!["pushNotifications"]==false||(user.notifications!["pushNotifications"]==true&&user.notifications!["pointsActivity"]!=true)) return;
         fcmToken=user.token!;
       }else{
@@ -221,7 +218,6 @@ static final serviceAccount = {
         "message": {
           "token": fcmToken,
           "notification": {"title": "Otrzymałeś nowe buszki!", "body": "Ktoś przelał ci nowe buszki w wysokości $points"},
-          // "data": data ?? {},
           "android": {"priority": "high"},
         },
       };
@@ -232,6 +228,7 @@ static final serviceAccount = {
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode(message),
     );
+    print("WYSLANOO");
 
     if (response.statusCode == 200) {
       print("✅ Notification sent!");
