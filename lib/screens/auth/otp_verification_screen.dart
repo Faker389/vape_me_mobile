@@ -77,7 +77,22 @@ class _OTPVerificationScreenState extends State<OTPVerificationScreen> {
       );
     }
   }
+Future<void> requestNotificationPermission() async {
+  FirebaseMessaging messaging = FirebaseMessaging.instance;
 
+  NotificationSettings settings = await messaging.requestPermission(
+    alert: true,
+    badge: true,
+    sound: true,
+  );
+
+  if (settings.authorizationStatus == AuthorizationStatus.authorized) {
+    print('User granted permission');
+  } else if (settings.authorizationStatus == AuthorizationStatus.provisional) {
+    print('User granted provisional permission');
+  } else {
+    print('User declined or has not accepted permission');
+  }}
   Future<void> _handleUserData() async {
     try {
       if (widget.name != null && widget.email != null) {
@@ -89,6 +104,7 @@ class _OTPVerificationScreenState extends State<OTPVerificationScreen> {
       if (!mounted) return;
 
       // ✅ Navigate safely
+      await requestNotificationPermission();
       Navigator.of(context).pushAndRemoveUntil(
         MaterialPageRoute(builder: (context) => const MainScreen()),
         (route) => false,

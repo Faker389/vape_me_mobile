@@ -8,6 +8,8 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:vape_me/models/user_model.dart';
 import 'package:vape_me/utils/hive_storage.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class FirebaseMessagingService {
   static final FirebaseMessagingService _instance = FirebaseMessagingService._internal();
@@ -38,7 +40,9 @@ static final serviceAccount = {
   static final scopes = ['https://www.googleapis.com/auth/firebase.messaging'];
 
   final _localNotification = FlutterLocalNotificationsPlugin();
-  
+  final userTemp = FirebaseAuth.instance.currentUser;
+
+  late String? idToken ;
   static const String CHANNEL_ID = 'vape_me_channel';
   bool _notificationsInitialized = false;
   String? token;
@@ -58,6 +62,7 @@ static final serviceAccount = {
   // Initialize Firebase and local notifications
   Future<void> initialize() async {
     print('Initializing Firebase Messaging Service...');
+    idToken= await userTemp!.getIdToken();
   //   bool userExists = await checkUser();
   //   if (!userExists) {
   //   print('User not authenticated, skipping messaging init.');
@@ -198,50 +203,27 @@ static final serviceAccount = {
       required String phoneNumber
     }
   )async{
-    
-       final docSnapshot = await _db.collection('users').doc(phoneNumber).get();
-      String fcmToken;
-      if (docSnapshot.exists) {
-        final user = UserModel.fromMap(docSnapshot.data() as Map<String, dynamic>);
-  if(user.notifications==null){
-    return;
-  }
-        if(user.notifications!["pushNotifications"]==false||(user.notifications!["pushNotifications"]==true&&user.notifications!["pointsActivity"]!=true)) return;
-        fcmToken=user.token!;
-      }else{
-        return;
-      }
-      
-      final authClient = await clientViaServiceAccount(accountCredentials, scopes);
-      
-      final message = {
-        "message": {
-          "token": fcmToken,
-          "notification": {"title": "Otrzymałeś nowe buszki!", "body": "Ktoś przelał ci nowe buszki w wysokości $points"},
-          "android": {"priority": "high"},
-        },
-      };
     try {
 
-    final response = await authClient.post(
-      Uri.parse(notificationUrl),
-      headers: {'Content-Type': 'application/json'},
-      body: jsonEncode(message),
-    );
-    print("WYSLANOO");
-
-    if (response.statusCode == 200) {
-      print("✅ Notification sent!");
-    } else {
-      print("❌ Failed: ${response.statusCode}");
-      print(response.body);
-    }
+      
+      final url = Uri.parse("https://vape-me-nu.vercel.app/api/send_notification");
+      await http.post(
+    url,
+    headers: {"Content-Type": "application/json","Authorization": "Bearer $idToken"},
+    body: jsonEncode({
+      "userID": phoneNumber,
+      "title": "Gratulacje otrzymałeś nowe buszki!",
+      "body": "$points buszków zostało przelane na twoje konto!",
+      "priority": "high",
+      "notificationType": "pointsActivity"
+    }),
+  );
+  
   } catch (e) {
     print("Error sending notification: $e");
-  } finally {
-    authClient.close();
+  } 
   }
-  }
+ 
   Future<void> SendNewPromotionsNotification(
     {
         required String promotion,
@@ -249,53 +231,23 @@ static final serviceAccount = {
       String? phoneNumber
     }
   )async{
-    if (user == null) {
-    print("User not found, skipping notification.");
-    return;
-  }
-  if(user!.notifications==null){
-    return;
-  }
-      if(user!.notifications!["pushNotifications"]==false||(user!.notifications!["pushNotifications"]==true&&user!.notifications!["promotions"]!=true)) return;
-    String fcmToken="";
-      if(phoneNumber!=null){
-       final docSnapshot = await _db.collection('users').doc(phoneNumber).get();
-      if (docSnapshot.exists) {
-        final user = UserModel.fromMap(docSnapshot.data() as Map<String, dynamic>);
-        fcmToken=user.token!;
-      }else{
-        fcmToken=token;
-      }
-      }
-      final authClient = await clientViaServiceAccount(accountCredentials, scopes);
-      
-      final message = {
-        "message": {
-          "token": fcmToken,
-          "notification": {"title": "Sprawdź nową promocję!", "body": promotion},
-          // "data": data ?? {},
-          "android": {"priority": "high"},
-        },
-      };
-    try {
-
-    final response = await authClient.post(
-      Uri.parse(notificationUrl),
-      headers: {'Content-Type': 'application/json'},
-      body: jsonEncode(message),
-    );
-
-    if (response.statusCode == 200) {
-      print("✅ Notification sent!");
-    } else {
-      print("❌ Failed: ${response.statusCode}");
-      print(response.body);
-    }
+     try {
+      final url = Uri.parse("https://vape-me-nu.vercel.app/api/send_notification");
+      await http.post(
+    url,
+    headers: {"Content-Type": "application/json","Authorization": "Bearer $idToken"},
+    body: jsonEncode({
+      "userID": phoneNumber,
+      "title": "Sprawdź nową promocję!",
+      "body": promotion,
+      "priority": "high",
+      "notificationType": "promotions"
+    }),
+  );
+  
   } catch (e) {
     print("Error sending notification: $e");
-  } finally {
-    authClient.close();
-  }
+  } 
   }
   Future<void> SendAppNewsNotification(
     {
@@ -303,53 +255,24 @@ static final serviceAccount = {
        required String token,
       String? phoneNumber
     }
-  )async{ if (user == null) {
-    print("User not found, skipping notification.");
-    return;
-  }
-  if(user!.notifications==null){
-    return;
-  }
-      if(user!.notifications!["pushNotifications"]==false||(user!.notifications!["pushNotifications"]==true&&user!.notifications!["newsUpdates"]!=true)) return;
-    String fcmToken="";
-      if(phoneNumber!=null){
-       final docSnapshot = await _db.collection('users').doc(phoneNumber).get();
-      if (docSnapshot.exists) {
-        final user = UserModel.fromMap(docSnapshot.data() as Map<String, dynamic>);
-        fcmToken=user.token!;
-      }else{
-        fcmToken=token;
-      }
-      }
-      final authClient = await clientViaServiceAccount(accountCredentials, scopes);
+  )async{try {
       
-      final message = {
-        "message": {
-          "token": fcmToken,
-          "notification": {"title": "Nowe zmiany w aplikacji", "body": changes},
-          // "data": data ?? {},
-          "android": {"priority": "high"},
-        },
-      };
-    try {
-
-    final response = await authClient.post(
-      Uri.parse(notificationUrl),
-      headers: {'Content-Type': 'application/json'},
-      body: jsonEncode(message),
-    );
-
-    if (response.statusCode == 200) {
-      print("✅ Notification sent!");
-    } else {
-      print("❌ Failed: ${response.statusCode}");
-      print(response.body);
-    }
+      final url = Uri.parse("https://vape-me-nu.vercel.app/api/send_notification");
+      await http.post(
+    url,
+    headers: {"Content-Type": "application/json","Authorization": "Bearer $idToken"},
+    body: jsonEncode({
+      "userID": phoneNumber,
+      "title": "Nowe zmiany w aplikacji",
+      "body": changes,
+      "priority": "high",
+      "notificationType": "newsUpdates"
+    }),
+  );
+  
   } catch (e) {
     print("Error sending notification: $e");
-  } finally {
-    authClient.close();
-  }
+  } 
   }
   // Send notification to a specific FCM token
   Future<void> sendNotificationToToken({

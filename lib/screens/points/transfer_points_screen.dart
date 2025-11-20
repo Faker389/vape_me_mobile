@@ -81,14 +81,16 @@ class _TransferPointsScreenState extends State<TransferPointsScreen> {
       );
       return;
     }
-
+    int points = int.parse(_pointsController.text.trim());
+      String phoneNumber = _phoneController.text.trim();
+      if(user?.phoneNumber==phoneNumber){
+        return;
+      }
     setState(() {
       _isLoading = true;
     });
 
     try {
-      int points = int.parse(_pointsController.text.trim());
-      String phoneNumber = _phoneController.text.trim();
       
       if (points <= user!.points) {
         final docSnapshot = await _db.collection('users').doc(phoneNumber).get();
