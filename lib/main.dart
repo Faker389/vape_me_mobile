@@ -24,12 +24,12 @@ void main() async {
 
   WidgetsFlutterBinding.ensureInitialized();
   await dotenv.load(fileName: ".env"); 
+  
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
   await Hive.initFlutter();
-  await Hive.deleteBoxFromDisk("userBox");
   // Register Hive adapters
   if (!Hive.isAdapterRegistered(0)) Hive.registerAdapter(UserModelAdapter());
   if (!Hive.isAdapterRegistered(1)) Hive.registerAdapter(TransactionTypeAdapter());

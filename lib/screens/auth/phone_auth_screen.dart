@@ -54,7 +54,6 @@ class _PhoneAuthScreenState extends State<PhoneAuthScreen> with SingleTickerProv
   @override
   void dispose() {
 
-    UserStorage.clearUser();
     _phoneController.dispose();
     _nameController.dispose();
     _emailController.dispose();
@@ -90,55 +89,84 @@ class _PhoneAuthScreenState extends State<PhoneAuthScreen> with SingleTickerProv
   }
 void _sendOTP() async {
   if (!_formKey.currentState!.validate()) return;
-  final phoneNumber = '+${_selectedCountry.phoneCode}${_phoneController.text}';
-  final authProvider = Provider.of<AuthProvider>(context, listen: false);
   
+  // Close keyboard
+  FocusScope.of(context).unfocus(); 
+
+  final phoneNumber = '+${_selectedCountry.phoneCode}${_phoneController.text}';
+  
+  // Check if user exists in DB before sending OTP to save money/limits
+  final user = await UserStorage.getUserFromDB(phoneNumber);
+
+  // LOGIC FIX: Handle Login vs Sign Up correctly
+  if (widget.isSignUp) {
+    // If trying to Sign Up, but user ALREADY exists
+    if (user != null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Masz już konto. Zaloguj się.'),
+          backgroundColor: AppTheme.accentRed,
+        ),
+      );
+      // Redirect to Login Screen
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const PhoneAuthScreen(isSignUp: false),
+        ),
+      );
+      return;
+    }
+  } else {
+    // If trying to Log In, but user DOES NOT exist
+    if (user == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Nie posiadasz jeszcze konta. Zarejestruj się.'),
+          backgroundColor: AppTheme.accentRed,
+        ),
+      );
+      // Redirect to Sign Up Screen
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const PhoneAuthScreen(isSignUp: true),
+        ),
+      );
+      return;
+    }
+  }
+
+  // If logic passes, proceed to send OTP
+  final authProvider = Provider.of<AuthProvider>(context, listen: false);
   bool success = await authProvider.sendOTP(phoneNumber);
+  
   if (!mounted) return;
 
   if (success) {
-    // <CHANGE> Show success message before navigation
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
         content: Text('Kod weryfikacyjny został wysłany!'),
-        backgroundColor: Colors.green,
-        duration: Duration(milliseconds: 1500),
+        backgroundColor: AppTheme.accentGreen, // Changed to green
       ),
     );
-    
-    // <CHANGE> Add delay to let user see the success message
-    await Future.delayed(const Duration(milliseconds: 1500));
-    if(widget.isSignUp){
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => OTPVerificationScreen(
-                phoneNumber: phoneNumber,
-                name:  _nameController.text ,
-                email:  _emailController.text
-              ),
-            ),
-          );
-          return;
-    }
-    final user = await UserStorage.getUserFromDB(phoneNumber);
 
-    if(user==null){
-      Navigator.push(
+    // NAVIGATION FIX: Actually navigate to the OTP Screen
+    Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) =>
-            const PhoneAuthScreen(isSignUp: true),
+        builder: (context) => OTPVerificationScreen(
+          phoneNumber: phoneNumber,
+          // Pass name/email only if signing up
+          name: widget.isSignUp ? _nameController.text.trim() : null,
+          email: widget.isSignUp ? _emailController.text.trim() : null,
+        ),
       ),
     );
-    return;
-    }
-    // <CHANGE> Now navigate to OTP screen
-    
   } else {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text(authProvider.errorMessage ?? 'Nie udało sie wysłać kodu weryfikacyjnego'),
+        content: Text(authProvider.errorMessage ?? 'Nie udało sie wysłać kodu'),
         backgroundColor: AppTheme.accentRed,
       ),
     );

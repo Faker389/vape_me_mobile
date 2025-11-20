@@ -9,7 +9,7 @@ class RewardModel {
   final String category;
   final bool isDiscount;
   final int? discountamount;
-  final Timestamp expiryDate;
+  final String expiryDate;
   final int? minimalPrice;
   RewardModel({
     required this.id,
@@ -33,7 +33,8 @@ class RewardModel {
       pointsCost: map['pointsCost'] ?? 0,
       category: map['category'] ?? '',
       isDiscount: map['isDiscount'] ?? false,
-      expiryDate: map["expiryDate"]??DateTime.now(),
+      expiryDate: map["expiryDate"]??DateTime.now().toIso8601String(),
+      discountamount: map['discountamount']??0,
       minimalPrice: map['minimalPrice'] ?? 0,
     );
   }
@@ -49,6 +50,7 @@ class RewardModel {
       'isDiscount':isDiscount,
       'expiryDate': expiryDate,
       'minimalPrice': minimalPrice,
+      'discountamount':discountamount,
     };
   }
 }

@@ -18,7 +18,8 @@ class FuturisticRewardCard extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: SizedBox(
-        height: 220,
+        // 1. HEIGHT: Keep this matched with your ListView height or slightly smaller
+        height: 220, 
         child: Container(
           width: 170,
           decoration: BoxDecoration(
@@ -61,12 +62,12 @@ class FuturisticRewardCard extends StatelessWidget {
                   ),
                 ),
               ),
-              
+
               // Main content
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Image section with gradient overlay
+                  // Image section
                   ClipRRect(
                     borderRadius: const BorderRadius.vertical(
                       top: Radius.circular(20),
@@ -78,7 +79,8 @@ class FuturisticRewardCard extends StatelessWidget {
                           width: double.infinity,
                           color: const Color(0xFF0F1419),
                           child: reward.isDiscount
-                              ? DiscountBox(percentage: reward.discountamount ?? 0)
+                              ? DiscountBox(
+                                  percentage: reward.discountamount ?? 0)
                               : CachedNetworkImage(
                                   imageUrl: reward.imageUrl,
                                   fit: BoxFit.cover,
@@ -93,7 +95,8 @@ class FuturisticRewardCard extends StatelessWidget {
                                       ),
                                     ),
                                   ),
-                                  errorWidget: (context, url, error) => Container(
+                                  errorWidget: (context, url, error) =>
+                                      Container(
                                     color: const Color(0xFF16213E),
                                     child: Icon(
                                       Icons.image_not_supported,
@@ -120,16 +123,16 @@ class FuturisticRewardCard extends StatelessWidget {
                       ],
                     ),
                   ),
-                  
+
                   // Content section
                   Expanded(
                     child: Padding(
-                      padding: const EdgeInsets.all(14),
+                      padding: const EdgeInsets.all(12), // Reduced padding slightly to give more room
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          // Title
+                          // 2. TITLE FIX: Changed to maxLines: 1 to fit in the box
                           Text(
                             reward.name,
                             style: const TextStyle(
@@ -138,12 +141,11 @@ class FuturisticRewardCard extends StatelessWidget {
                               fontSize: 15,
                               letterSpacing: 0.3,
                             ),
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
+                            maxLines: 1, // ✅ Changed from 2 to 1 to prevent overflow
+                            overflow: TextOverflow.ellipsis, // ✅ Adds "..."
                           ),
-                          const SizedBox(height: 8),
                           
-                          // Points badge with futuristic design
+                          // Points badge
                           Container(
                             padding: const EdgeInsets.symmetric(
                               horizontal: 12,
@@ -161,7 +163,8 @@ class FuturisticRewardCard extends StatelessWidget {
                               borderRadius: BorderRadius.circular(16),
                               boxShadow: [
                                 BoxShadow(
-                                  color: const Color(0xFF7B2CBF).withOpacity(0.5),
+                                  color:
+                                      const Color(0xFF7B2CBF).withOpacity(0.5),
                                   blurRadius: 8,
                                   offset: const Offset(0, 2),
                                 ),
@@ -177,7 +180,7 @@ class FuturisticRewardCard extends StatelessWidget {
                                 ),
                                 const SizedBox(width: 4),
                                 Text(
-                                  '${reward.pointsCost} buszków',
+                                  '${reward.pointsCost} pkt', // Shortened text slightly
                                   style: const TextStyle(
                                     color: Colors.white,
                                     fontSize: 13,
@@ -194,7 +197,7 @@ class FuturisticRewardCard extends StatelessWidget {
                   ),
                 ],
               ),
-              
+
               // Corner accent
               Positioned(
                 top: 0,

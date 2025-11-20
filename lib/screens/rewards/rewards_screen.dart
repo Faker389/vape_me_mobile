@@ -56,7 +56,8 @@ void _redeemRewardHelper(
       pointsCost: reward.pointsCost,
       claimedDate: DateTime.now(),
       isDiscount:reward.isDiscount,
-      expiryDate: DateTime.now().add(const Duration(days: 14)),
+      expiryDate: DateTime.parse(reward.expiryDate),
+      discountAmount: reward.discountamount,
       isUsed: false,
       usedDate: null,
       category: reward.category,
@@ -317,16 +318,24 @@ void initState() {
           Consumer2<RewardsProvider, UserProvider>(
             builder: (context, rewardsProvider, userProvider, child) {
              
-            final redeemedIds = user?.coupons?.map((c) => c.rewardID).toList() ?? [];
-                final availableRewards = rewardsProvider.rewards
+           final redeemedIds = user?.coupons?.map((c) => c.rewardID).toList() ?? [];
+
+final availableRewards = rewardsProvider.rewards
     .where((r) {
       if (redeemedIds.contains(r.id)) return false;
-      DateTime? expiry;
-        expiry = (r.expiryDate).toDate();
+
+      DateTime expiry;
+      try {
+        expiry = DateTime.parse(r.expiryDate);  // <-- string → DateTime
+      } catch (_) {
+        return false; // invalid date, hide reward
+      }
+
       return DateTime.now().isBefore(expiry);
     })
     .take(5)
     .toList();
+
 
 
               if (rewardsProvider.isLoading) {
