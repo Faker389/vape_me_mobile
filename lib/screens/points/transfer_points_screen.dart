@@ -10,7 +10,7 @@ import '../../utils/theme.dart';
 import '../../utils/hive_storage.dart';
 
 class TransferPointsScreen extends StatefulWidget {
-  const TransferPointsScreen({Key? key}) : super(key: key);
+  const TransferPointsScreen({super.key});
 
   @override
   State<TransferPointsScreen> createState() => _TransferPointsScreenState();

@@ -7,7 +7,7 @@ import 'package:vape_me/utils/hive_storage.dart';
 import '../../utils/theme.dart';
 
 class NotificationsScreen extends StatefulWidget {
-  const NotificationsScreen({Key? key}) : super(key: key);
+  const NotificationsScreen({super.key});
 
   @override
   State<NotificationsScreen> createState() => _NotificationsScreenState();
@@ -156,7 +156,7 @@ Future<void> requestNotificationPermission() async {
   UserModel user = UserStorage.getUser()!;
   user.notifications=notificationModel;
   final response = await UserStorage.updateUser(user);
-  print("Wynik koncowy: "+response.toString());
+  print("Wynik koncowy: $response");
   setState(() => _isLoading = false);
 
   if (mounted) {
@@ -513,7 +513,7 @@ Future<void> requestNotificationPermission() async {
               Switch(
                 value: value,
                 onChanged: onChanged,
-                activeColor: color,
+                activeThumbColor: color,
                 activeTrackColor: color.withOpacity(0.5),
               ),
             ],

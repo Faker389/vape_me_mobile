@@ -9,7 +9,7 @@ import '../../utils/theme.dart';
 class CouponDetailScreen extends StatefulWidget {
   final CouponModel coupon;
 
-  const CouponDetailScreen({Key? key, required this.coupon}) : super(key: key);
+  const CouponDetailScreen({super.key, required this.coupon});
 
   @override
   State<CouponDetailScreen> createState() => _CouponDetailScreenState();
@@ -206,7 +206,7 @@ class _CouponDetailScreenState extends State<CouponDetailScreen>
               ],
             ),
             child:QrImageView(
-              data: "coupon="+widget.coupon.id+"user="+user!.phoneNumber,
+              data: "coupon=${widget.coupon.id}user=${user!.phoneNumber}",
   version: QrVersions.auto,
   size: 250.0,
   backgroundColor: Colors.white,

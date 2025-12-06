@@ -8,7 +8,7 @@ import 'package:vape_me/utils/hive_storage.dart';
 import '../../utils/theme.dart';
 
 class HelpScreen extends StatelessWidget {
-  const HelpScreen({Key? key}) : super(key: key);
+  const HelpScreen({super.key});
 static Future<bool> checkUser(AuthProvider authProvider)async{
           final user = UserStorage.getUser();
          if (user == null) {

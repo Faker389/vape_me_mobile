@@ -5,8 +5,10 @@ import 'package:vape_me/models/user_model.dart';
 import 'package:vape_me/screens/home/rewardCard.dart';
 import 'package:vape_me/screens/widgets/points_card.dart';
 import 'package:vape_me/screens/widgets/recent_transactions.dart';
+import 'package:vape_me/utils/AppVersionHolder.dart';
 import 'package:vape_me/utils/checkUser.dart';
 import 'package:vape_me/utils/firebase_messaging.dart';
+import 'package:vape_me/screens/UpdateScreen.dart';
 
 import '../../providers/user_provider.dart';
 import '../../providers/rewards_provider.dart';
@@ -15,7 +17,7 @@ import '../main_screen.dart';
 import '../../utils/hive_storage.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({Key? key}) : super(key: key);
+  const HomeScreen({super.key});
 
   @override
   State<HomeScreen> createState() => HomeScreenState();
@@ -31,7 +33,7 @@ class HomeScreenState extends State<HomeScreen> {
   Future<void> refreshData() async {
     await _refreshAllData();
   }
-
+ 
   Future<void> checkAndUpdateToken() async {
     final currentUser = UserStorage.getUser();
     if (currentUser == null) return;
@@ -62,18 +64,26 @@ class HomeScreenState extends State<HomeScreen> {
     }
   }
 }
-
+void _checkVersion() {
+  if (AppVersionHolder.firestoreVersion > AppVersionHolder.appVersion && mounted) {
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (_) => UpdateScreen()),
+    );
+  }
+}
   @override
   void initState() {
     super.initState();
     loadUser();
-    
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) {
         Provider.of<UserProvider>(context, listen: false).startUserListener();
         Provider.of<RewardsProvider>(context, listen: false).loadRewards();
+        _checkVersion();
       }
     });
+    
   }
 
   
@@ -81,13 +91,13 @@ class HomeScreenState extends State<HomeScreen> {
   Future<void> _refreshAllData() async {
     final userProvider = Provider.of<UserProvider>(context, listen: false);
     final rewardsProvider = Provider.of<RewardsProvider>(context, listen: false);
-
+  _checkVersion();
     await Future.wait([
       userProvider.refreshUserData(),
       userProvider.loadTransactions(),
       rewardsProvider.loadRewards(),
     ]);
-
+   
     // Reload user from storage after refresh
     final refreshedUser = UserStorage.getUser();
     if (mounted) {
@@ -100,6 +110,7 @@ class HomeScreenState extends State<HomeScreen> {
   @override
 Widget build(BuildContext context) {
   // Show loading indicator while user is being loaded
+
   if (isLoadingUser || user == null) {
     return Scaffold(
       body: Container(

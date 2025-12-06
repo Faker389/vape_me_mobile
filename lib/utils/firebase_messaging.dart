@@ -9,7 +9,6 @@ import 'package:vape_me/models/user_model.dart';
 import 'package:vape_me/utils/hive_storage.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
-import 'dart:convert';
 
 class FirebaseMessagingService {
   static final FirebaseMessagingService _instance = FirebaseMessagingService._internal();
@@ -358,7 +357,7 @@ static final serviceAccount = {
   // Test method to send a notification
   Future<void> sendTestNotification() async {
     final token = await getToken();
-    print("Token: "+token);
+    print("Token: $token");
     try{
 
     await sendNotificationToToken(

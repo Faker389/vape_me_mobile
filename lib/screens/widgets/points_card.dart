@@ -6,7 +6,7 @@ import '../../utils/theme.dart';
 
 class PointsCard extends StatelessWidget {
     final int points;
-  const PointsCard({Key? key, required this.points}) : super(key: key);
+  const PointsCard({super.key, required this.points});
 
   @override
   Widget build(BuildContext context) {

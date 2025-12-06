@@ -8,7 +8,9 @@ import 'package:vape_me/models/reward_model.dart';
 import 'package:vape_me/models/transaction_model.dart';
 import 'package:vape_me/models/user_model.dart';
 import 'package:vape_me/providers/auth_provider.dart';
+import 'package:vape_me/screens/UpdateScreen.dart';
 import 'package:vape_me/screens/rewards/discountTemp.dart';
+import 'package:vape_me/utils/AppVersionHolder.dart';
 import 'package:vape_me/utils/checkUser.dart';
 import '../../providers/rewards_provider.dart';
 import '../../providers/user_provider.dart';
@@ -156,10 +158,10 @@ class RewardsScreen extends StatefulWidget {
   final VoidCallback? onRewardRedeemed; // New callback for home screen
 
   const RewardsScreen({
-    Key? key, 
+    super.key, 
     this.reward,
     this.onRewardRedeemed,
-  }) : super(key: key);
+  });
 
   @override
   State<RewardsScreen> createState() => _RewardsScreenState();
@@ -196,7 +198,7 @@ void initState() {
     final rewardsProvider = Provider.of<RewardsProvider>(context, listen: false);
     
     userProvider.startUserListener();
-    
+    _checkVersion();
     // Load rewards and wait for completion
     await rewardsProvider.loadRewards();
     
@@ -209,8 +211,16 @@ void initState() {
       }
     }
   });
+  
 }
-
+void _checkVersion() {
+  if (AppVersionHolder.firestoreVersion > AppVersionHolder.appVersion && mounted) {
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (_) => UpdateScreen()),
+    );
+  }
+}
   Future<void> _preloadRewardImage(RewardModel reward) async {
     try {
       await precacheImage(
@@ -228,6 +238,7 @@ void initState() {
     userProvider.refreshUserData(),
     rewardsProvider.loadRewards(),
   ]);
+    _checkVersion();
   
   // ADD THESE LINES ↓
   final refreshedUser = UserStorage.getUser();
@@ -269,6 +280,7 @@ void initState() {
 
   @override
   Widget build(BuildContext context) {
+     
     if (isLoadingUser || user == null) {
     return Scaffold(
       body: Container(
@@ -473,7 +485,7 @@ final availableRewards = rewardsProvider.rewards
 
 class RewardCardSimple extends StatelessWidget {
   final RewardModel reward;
-  const RewardCardSimple({Key? key, required this.reward}) : super(key: key);
+  const RewardCardSimple({super.key, required this.reward});
 
   @override
   Widget build(BuildContext context) {
@@ -562,10 +574,10 @@ class RewardModalContent extends StatelessWidget {
   final VoidCallback onRedeemSuccess;
   
   const RewardModalContent({
-    Key? key, 
+    super.key, 
     required this.reward,
     required this.onRedeemSuccess,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

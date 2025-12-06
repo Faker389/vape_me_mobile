@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:vape_me/providers/user_provider.dart';
+import 'package:vape_me/screens/UpdateScreen.dart';
 import 'package:vape_me/screens/coupons/active_coupons_screen.dart';
+import 'package:vape_me/utils/AppVersionHolder.dart';
 
 import '../../providers/auth_provider.dart';
 import '../../utils/theme.dart';
@@ -15,7 +17,7 @@ import '../settings/privacy_policy_screen.dart';
 import '../points/transfer_points_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
-  const ProfileScreen({Key? key}) : super(key: key);
+  const ProfileScreen({super.key});
 
   static Future<bool> checkUser(AuthProvider authProvider) async {
     final user = UserStorage.getUser();
@@ -36,15 +38,27 @@ class ProfileScreen extends StatefulWidget {
 
 class _ProfileScreenState extends State<ProfileScreen> {
   final GlobalKey<RefreshIndicatorState> _refreshKey = GlobalKey();
-
+void _checkVersion() {
+  if (AppVersionHolder.firestoreVersion > AppVersionHolder.appVersion && mounted) {
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (_) => UpdateScreen()),
+    );
+  }
+}
   Future<void> _refreshAllData() async {
     final userProvider = Provider.of<UserProvider>(context, listen: false);
-
+    _checkVersion();
     await Future.wait([
       userProvider.refreshUserData(),
       userProvider.loadTransactions(),
     ]);
-
+     if (AppVersionHolder.firestoreVersion > AppVersionHolder.appVersion) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (_) => UpdateScreen()),
+      );
+    }
     // Reload user from storage after refresh
     if (mounted) {
       setState(() {});
@@ -53,6 +67,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
+    _checkVersion();
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: AppBar(

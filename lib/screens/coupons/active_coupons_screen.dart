@@ -9,7 +9,7 @@ import '../../utils/theme.dart';
 import 'coupon_detail_screen.dart';
 
 class ActiveCouponsScreen extends StatefulWidget {
-  const ActiveCouponsScreen({Key? key}) : super(key: key);
+  const ActiveCouponsScreen({super.key});
 
   @override
   State<ActiveCouponsScreen> createState() => _ActiveCouponsScreenState();

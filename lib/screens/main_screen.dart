@@ -16,11 +16,11 @@ class MainScreen extends StatefulWidget {
   final VoidCallback? onRewardRedeemed;
   
   const MainScreen({
-    Key? key, 
+    super.key, 
     this.initialIndex,
     this.rewardModel,
     this.onRewardRedeemed,
-  }) : super(key: key);
+  });
 
   @override
   State<MainScreen> createState() => _MainScreenState();

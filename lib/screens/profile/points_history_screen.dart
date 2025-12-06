@@ -9,7 +9,7 @@ import '../../models/transaction_model.dart';
 import '../../utils/theme.dart';
 
 class PointsHistoryScreen extends StatefulWidget {
-  const PointsHistoryScreen({Key? key}) : super(key: key);
+  const PointsHistoryScreen({super.key});
 
   @override
   State<PointsHistoryScreen> createState() => _PointsHistoryScreenState();

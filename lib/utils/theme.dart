@@ -22,11 +22,9 @@ class AppTheme {
         primary: primaryPurple,
         secondary: primaryPink,
         surface: cardBackground,
-        background: darkBackground,
         onPrimary: Colors.white,
         onSecondary: Colors.white,
         onSurface: textPrimary,
-        onBackground: textPrimary,
       ),
       
       appBarTheme: const AppBarTheme(

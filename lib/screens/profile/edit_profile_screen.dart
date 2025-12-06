@@ -7,7 +7,7 @@ import '../../providers/auth_provider.dart';
 import '../../utils/theme.dart';
 import '../../utils/hive_storage.dart';
 class EditProfileScreen extends StatefulWidget {
-  const EditProfileScreen({Key? key}) : super(key: key);
+  const EditProfileScreen({super.key});
 
   @override
   State<EditProfileScreen> createState() => _EditProfileScreenState();

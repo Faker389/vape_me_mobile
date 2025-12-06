@@ -5,7 +5,7 @@ import '../../providers/rewards_provider.dart';
 import '../../utils/theme.dart';
 
 class CategoryFilter extends StatelessWidget {
-  const CategoryFilter({Key? key}) : super(key: key);
+  const CategoryFilter({super.key});
 
   @override
   Widget build(BuildContext context) {

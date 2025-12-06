@@ -8,7 +8,7 @@ import '../../providers/auth_provider.dart';
 import '../../utils/theme.dart';
 
 class QRScreen extends StatefulWidget {
-  const QRScreen({Key? key}) : super(key: key);
+  const QRScreen({super.key});
 
 
   @override

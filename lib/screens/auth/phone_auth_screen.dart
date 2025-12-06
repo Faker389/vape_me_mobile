@@ -10,7 +10,7 @@ import 'otp_verification_screen.dart';
 class PhoneAuthScreen extends StatefulWidget {
   final bool isSignUp;
 
-  const PhoneAuthScreen({Key? key, required this.isSignUp}) : super(key: key);
+  const PhoneAuthScreen({super.key, required this.isSignUp});
 
   @override
   State<PhoneAuthScreen> createState() => _PhoneAuthScreenState();

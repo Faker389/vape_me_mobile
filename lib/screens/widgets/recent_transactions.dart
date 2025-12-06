@@ -10,7 +10,7 @@ import '../../utils/theme.dart';
 import '../../screens/profile/points_history_screen.dart';
 
 class RecentTransactions extends StatelessWidget {
-  const RecentTransactions({Key? key}) : super(key: key);
+  const RecentTransactions({super.key});
 
   @override
   Widget build(BuildContext context) {
