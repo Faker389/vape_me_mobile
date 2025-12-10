@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -48,10 +50,14 @@ void _redeemRewardHelper(
     );
     return;
   }
-
+  String generateUID({int length = 10}) {
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  final rand = Random.secure(); // more secure than Random()
+  return List.generate(length, (_) => chars[rand.nextInt(chars.length)]).join();
+}
   final user = UserStorage.getUser()!;
   CouponModel coupon = CouponModel(
-      id: Uuid().v4(),
+      id: generateUID(),
       rewardID: reward.id,
       title: reward.name,
       description: reward.description,
@@ -66,7 +72,7 @@ void _redeemRewardHelper(
       imageUrl: reward.imageUrl
   );
   TransactionModel transaction = TransactionModel(
-      id: Uuid().v4(),
+      id: generateUID(),
       type: TransactionType.redeem,
       points: reward.pointsCost,
       description: reward.name,
@@ -507,7 +513,7 @@ class RewardCardSimple extends StatelessWidget {
           Expanded(
             child: Container(
               decoration: const BoxDecoration(
-                color: Colors.white,
+                color: Colors.transparent,
                 borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
               ),
               child: Center(
@@ -518,7 +524,7 @@ class RewardCardSimple extends StatelessWidget {
                     imageUrl: reward.imageUrl,
                     fit: BoxFit.cover,
                     placeholder: (context, url) =>
-                        Container(color: Colors.white),
+                        Container(color: Colors.transparent),
                     errorWidget: (context, url, error) =>
                         const Icon(Icons.image, size: 48),
                   ):DiscountBox(percentage: reward.discountamount??0),
@@ -586,23 +592,23 @@ class RewardModalContent extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          ClipRRect(
-            borderRadius: BorderRadius.circular(16),
-            child: AspectRatio(
-              aspectRatio: 16 / 9,
-              child: CachedNetworkImage(
-                imageUrl: reward.imageUrl,
-                fit: BoxFit.fill,
-                placeholder: (context, url) => Container(
-                  color: AppTheme.surfaceColor,
-                ),
-                errorWidget: (context, url, error) => Container(
-                  color: AppTheme.surfaceColor,
-                  child: const Icon(Icons.image, size: 64),
-                ),
-              ),
+         Center(
+  child: ClipRRect(
+    borderRadius: BorderRadius.circular(16),
+    child: reward.isDiscount == false
+        ? CachedNetworkImage(
+            imageUrl: reward.imageUrl,
+            placeholder: (context, url) => Container(
+              color: AppTheme.surfaceColor,
             ),
-          ),
+            errorWidget: (context, url, error) => Container(
+              color: AppTheme.surfaceColor,
+              child: const Icon(Icons.image, size: 64),
+            ),
+          )
+        : DiscountBox(percentage: reward.discountamount!),
+  ),
+),
           const SizedBox(height: 24),
           Text(reward.name, style: Theme.of(context).textTheme.headlineMedium),
                    Text(

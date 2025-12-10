@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:screen_brightness/screen_brightness.dart';
 import 'package:vape_me/utils/hive_storage.dart';
+import 'package:barcode_widget/barcode_widget.dart';
 import '../../models/coupon_model.dart';
 import '../../utils/theme.dart';
 
@@ -205,13 +206,21 @@ class _CouponDetailScreenState extends State<CouponDetailScreen>
                 ),
               ],
             ),
-            child:QrImageView(
-              data: "coupon=${widget.coupon.id}user=${user!.phoneNumber}",
-  version: QrVersions.auto,
-  size: 250.0,
+//             child:QrImageView(
+//               data: "coupon=${widget.coupon.id}user=${user!.phoneNumber}",
+//   version: QrVersions.auto,
+//   size: 250.0,
+//   backgroundColor: Colors.white,
+//   foregroundColor: Colors.black,
+// )
+          child:  BarcodeWidget(
+                        data: "coupon=${widget.coupon.id}user=${user!.phoneNumber}",
+  barcode: Barcode.code128(),
+  width: 350,
+  height: 120,
   backgroundColor: Colors.white,
-  foregroundColor: Colors.black,
-)
+  drawText: false,
+),
           ),
           
           const SizedBox(height: 24),
