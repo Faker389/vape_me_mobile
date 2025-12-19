@@ -80,7 +80,7 @@ class FuturisticRewardCard extends StatelessWidget {
                           color: const Color(0xFF0F1419),
                           child: reward.isDiscount
                               ? DiscountBox(
-                                  percentage: reward.discountamount ?? 0)
+                                  percentage: reward.discountAmount ?? 0)
                               : CachedNetworkImage(
                                   imageUrl: reward.imageUrl,
                                   fit: BoxFit.cover,

@@ -3,12 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:vape_me/models/user_model.dart';
 import 'package:vape_me/screens/home/rewardCard.dart';
+import 'package:vape_me/screens/widgets/age_verification.dart';
 import 'package:vape_me/screens/widgets/points_card.dart';
 import 'package:vape_me/screens/widgets/recent_transactions.dart';
 import 'package:vape_me/utils/AppVersionHolder.dart';
 import 'package:vape_me/utils/checkUser.dart';
 import 'package:vape_me/utils/firebase_messaging.dart';
 import 'package:vape_me/screens/UpdateScreen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../providers/user_provider.dart';
 import '../../providers/rewards_provider.dart';
@@ -64,6 +66,16 @@ class HomeScreenState extends State<HomeScreen> {
     }
   }
 }
+Future<void> _checkAgeVerification() async {
+    final prefs = await SharedPreferences.getInstance();
+    bool age = prefs.getBool('ageVerified') ?? false;
+    if(!age){
+       Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (_) => AgeVerificationScreen()),
+    );
+    }
+  }
 void _checkVersion() {
   if (AppVersionHolder.firestoreVersion > AppVersionHolder.appVersion && mounted) {
     Navigator.pushReplacement(
@@ -75,6 +87,7 @@ void _checkVersion() {
   @override
   void initState() {
     super.initState();
+    _checkAgeVerification();
     loadUser();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) {

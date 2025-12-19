@@ -35,7 +35,7 @@ Future<void> loadRewards() async {
         imageUrl: data['imageUrl'] ?? '',
         pointsCost: data['pointsCost'] ?? 0,
         category: data['category'] ?? 'Uncategorized',
-        discountamount: data['discountamount'] ?? 0, 
+        discountAmount: data['discountamount'] ?? 0, 
         expiryDate: data["expiryDate"] ?? DateTime.now(),
         minimalPrice: data["minimalPrice"]??0
       );

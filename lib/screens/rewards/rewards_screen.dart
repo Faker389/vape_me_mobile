@@ -65,7 +65,7 @@ void _redeemRewardHelper(
       claimedDate: DateTime.now(),
       isDiscount:reward.isDiscount,
       expiryDate: DateTime.parse(reward.expiryDate),
-      discountAmount: reward.discountamount,
+      discountAmount: reward.discountAmount,
       isUsed: false,
       usedDate: null,
       category: reward.category,
@@ -527,7 +527,7 @@ class RewardCardSimple extends StatelessWidget {
                         Container(color: Colors.transparent),
                     errorWidget: (context, url, error) =>
                         const Icon(Icons.image, size: 48),
-                  ):DiscountBox(percentage: reward.discountamount??0),
+                  ):DiscountBox(percentage: reward.discountAmount??0),
                 ),
               ),
             ),
@@ -606,7 +606,7 @@ class RewardModalContent extends StatelessWidget {
               child: const Icon(Icons.image, size: 64),
             ),
           )
-        : DiscountBox(percentage: reward.discountamount!),
+        : DiscountBox(percentage: reward.discountAmount!),
   ),
 ),
           const SizedBox(height: 24),
