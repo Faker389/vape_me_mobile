@@ -42,7 +42,7 @@ dependencies:
   # State Management
   provider: ^6.1.1
   google_sign_in: ^6.2.0
-  flutter_facebook_auth: ^7.1.2
+#  flutter_facebook_auth: ^6.0.1
   font_awesome_flutter: ^10.10.0
   barcode_scan2: ^4.5.1
   url_launcher: ^6.3.2
@@ -57,8 +57,10 @@ dependencies:
   barcode_widget: ^2.0.4
   screen_brightness: ^2.1.7
   connectivity_plus: ^7.0.0
+
+
 dev_dependencies:
-   
+  flutter_native_splash: ^2.4.7
   flutter_test:
     sdk: flutter
   flutter_lints: ^5.0.0
