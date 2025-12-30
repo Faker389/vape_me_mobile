@@ -33,5 +33,6 @@ Runner/GeneratedPluginRegistrant.*
 !default.pbxuser
 !default.perspectivev3
 
+build
 GoogleService-Info.plist
 Runner/GoogleService-Info.plist
