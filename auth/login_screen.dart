@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import 'register_screen.dart';
@@ -113,56 +112,7 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
-  Future<void> _signInWithFacebook() async {
-    setState(() {
-      _isLoading = true;
-      _errorMessage = null;
-    });
-
-    try {
-      // Trigger the Facebook Sign In process
-      final LoginResult result = await FacebookAuth.instance.login();
-      
-      if (result.status == LoginStatus.cancelled) {
-        // User canceled the sign-in flow
-        setState(() {
-          _isLoading = false;
-        });
-        return;
-      }
-
-      if (result.status == LoginStatus.success) {
-        // Get the access token
-        final AccessToken accessToken = result.accessToken!;
-
-        // Create a Facebook credential
-        final OAuthCredential credential = FacebookAuthProvider.credential(accessToken.tokenString);
-
-        // Sign in to Firebase with the Facebook credential
-        await FirebaseAuth.instance.signInWithCredential(credential);
-        
-        // Navigate to home screen
-        if (mounted) {
-          Navigator.pushReplacementNamed(context, '/home');
-        }
-      } else {
-        setState(() {
-          _errorMessage = 'Facebook login failed: ${result.message}';
-        });
-      }
-    } catch (e) {
-      setState(() {
-        _errorMessage = 'Failed to sign in with Facebook: ${e.toString()}';
-      });
-    } finally {
-      if (mounted) {
-        setState(() {
-          _isLoading = false;
-        });
-      }
-    }
-  }
-
+ 
   void _navigateToRegister() {
     Navigator.push(
       context,
@@ -376,21 +326,6 @@ class _LoginScreenState extends State<LoginScreen> {
                     const SizedBox(width: 16),
                     
                     // Facebook Sign In
-                    Expanded(
-                      child: ElevatedButton.icon(
-                        icon: const FaIcon(FontAwesomeIcons.facebook, size: 18),
-                        label: const Text('Facebook'),
-                        onPressed: _isLoading ? null : _signInWithFacebook,
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xFF1877F2),
-                          foregroundColor: Colors.white,
-                          padding: const EdgeInsets.symmetric(vertical: 12),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                        ),
-                      ),
-                    ),
                   ],
                 ),
                 const SizedBox(height: 24),
