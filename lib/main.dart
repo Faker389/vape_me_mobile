@@ -24,12 +24,12 @@
   void main() async {
 
     WidgetsFlutterBinding.ensureInitialized();
-    await dotenv.load(fileName: ".env"); 
-    
+    await dotenv.load(fileName: ".env");
+
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
     );
-    
+
     await Hive.initFlutter();
     // Register Hive adapters
     if (!Hive.isAdapterRegistered(0)) Hive.registerAdapter(UserModelAdapter());
@@ -38,13 +38,27 @@
     if (!Hive.isAdapterRegistered(3)) Hive.registerAdapter(CouponModelAdapter());
     await UserStorage.init();
 
-    // Initialize Firebase Messaging
+  // Initialize Firebase Messaging
+
   final flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+
   await flutterLocalNotificationsPlugin.initialize(
     const InitializationSettings(
       android: AndroidInitializationSettings('@mipmap/ic_launcher'),
+      iOS: DarwinInitializationSettings(
+        requestAlertPermission: true,
+        requestBadgePermission: true,
+        requestSoundPermission: true,
+      ),
     ),
   );
+
+//  final flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+// await flutterLocalNotificationsPlugin.initialize(
+//   const InitializationSettings(
+//     android: AndroidInitializationSettings('@mipmap/ic_launcher'),
+//   ),
+// );
 
   FirebaseMessaging.onMessage.listen((RemoteMessage message) {
     final notification = message.notification;

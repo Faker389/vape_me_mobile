@@ -112,7 +112,6 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
- 
   void _navigateToRegister() {
     Navigator.push(
       context,
@@ -325,7 +324,6 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                     const SizedBox(width: 16),
                     
-                    // Facebook Sign In
                   ],
                 ),
                 const SizedBox(height: 24),

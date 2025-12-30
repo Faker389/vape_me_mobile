@@ -6,7 +6,7 @@
         android:label="Vape me"
         android:name="${applicationName}"
         android:enableOnBackInvokedCallback="true"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@mipmap/launcher_icon">
         <meta-data
             android:name="io.flutter.embedding.android.EnableImpeller"
             android:value="false" />
