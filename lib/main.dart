@@ -44,7 +44,7 @@
 
   await flutterLocalNotificationsPlugin.initialize(
     const InitializationSettings(
-      android: AndroidInitializationSettings('@mipmap/ic_launcher'),
+      android: AndroidInitializationSettings('icon'),
       iOS: DarwinInitializationSettings(
         requestAlertPermission: true,
         requestBadgePermission: true,
