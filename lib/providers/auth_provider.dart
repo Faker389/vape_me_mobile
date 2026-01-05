@@ -35,6 +35,44 @@ class AuthProvider with ChangeNotifier {
     }
     notifyListeners();
   }
+Future<void> deleteAccount() async {
+  try {
+
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) {
+      _setError('User not logged in');
+      return;
+    }
+
+    final phoneNumber = user.phoneNumber;
+    if (phoneNumber == null) {
+      _setError('Phone number not found');
+      return;
+    }
+
+    /// 1️⃣ DELETE USER DATA FIRST (still authenticated)
+    await FirebaseFirestore.instance
+        .collection('users')
+        .doc(phoneNumber)
+        .delete();
+    print("USUNIETO LUDZIA00'");
+    /// 2️⃣ DELETE AUTH ACCOUNT
+    await user.delete();
+    print("USUNIETO LUDZIA00 2'");
+
+  } on FirebaseAuthException catch (e) {
+
+    if (e.code == 'requires-recent-login') {
+      _setError('REAUTH_REQUIRED');
+    } else {
+      _setError(e.message ?? 'Auth error');
+    }
+    return;
+  } catch (e) {
+    _setError('Failed to delete account');
+    return;
+  }
+}
 
   Future<void> _loadUserModel() async {
     if (_user == null) return;

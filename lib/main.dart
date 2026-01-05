@@ -9,6 +9,7 @@
   import 'package:vape_me/utils/AppVersionHolder.dart';
   import 'package:vape_me/utils/VersionGate.dart';
   import 'package:vape_me/utils/VersionService.dart';
+  import 'package:vape_me/utils/globals.dart';
   import 'package:vape_me/utils/hive_storage.dart';
   import 'firebase_options.dart';
   import 'providers/auth_provider.dart';
@@ -104,6 +105,7 @@
         child: Consumer<AuthProvider>(
           builder: (context, authProvider, _) {
           final firebaseUser = fb.FirebaseAuth.instance.currentUser;
+
             // Start user listener when authenticated
             if (firebaseUser!=null&&firebaseUser.phoneNumber!=null) {
               UserStorage.syncFromFirestore(firebaseUser.phoneNumber!);
@@ -114,6 +116,7 @@
             int value =firebaseUser!=null? 1:2;
             return MaterialApp(
               title: 'Vape Me',
+              navigatorKey: navigatorKey, // ✅ set global key here
               debugShowCheckedModeBanner: false,
               theme: AppTheme.darkTheme,
               home:VersionGate(index:value),

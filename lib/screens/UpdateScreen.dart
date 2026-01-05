@@ -1,38 +1,47 @@
+import 'dart:io'; // ✅ for Platform
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class UpdateScreen extends StatelessWidget {
-  final String apkUrl = "https://www.vapeme.com.pl/vape%20me.apk";
+  // URLs for each platform
+  final String androidApkUrl = "https://www.vapeme.com.pl/vape%20me.apk";
+  final String iosAppStoreUrl =
+      "https://apps.apple.com/app/idYOUR_APP_ID"; // replace with your App Store link
 
   Future<void> _updateApp() async {
-    final Uri url = Uri.parse(apkUrl);
+    // Pick the URL based on platform
+    final String urlString = Platform.isIOS ? iosAppStoreUrl : androidApkUrl;
+    final Uri url = Uri.parse(urlString);
+
     if (await canLaunchUrl(url)) {
       await launchUrl(url, mode: LaunchMode.externalApplication);
+    } else {
+      // Handle error
+      debugPrint("Could not launch $urlString");
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFF1A1B2E),
+      backgroundColor: const Color(0xFF1A1B2E),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(24.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              SizedBox(height: 40),
-              // Header text
-              Text(
+              const SizedBox(height: 40),
+              const Text(
                 'Aktualizacja',
                 style: TextStyle(
-                  color: Colors.white.withOpacity(0.7),
+                  color: Colors.white70,
                   fontSize: 16,
                   fontWeight: FontWeight.w400,
                 ),
               ),
-              SizedBox(height: 8),
-              Text(
+              const SizedBox(height: 8),
+              const Text(
                 'Nowa wersja',
                 style: TextStyle(
                   color: Colors.white,
@@ -40,13 +49,12 @@ class UpdateScreen extends StatelessWidget {
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              SizedBox(height: 48),
-              // Gradient card with update info
+              const SizedBox(height: 48),
               Container(
                 width: double.infinity,
-                padding: EdgeInsets.all(32),
+                padding: const EdgeInsets.all(32),
                 decoration: BoxDecoration(
-                  gradient: LinearGradient(
+                  gradient: const LinearGradient(
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                     colors: [
@@ -58,7 +66,7 @@ class UpdateScreen extends StatelessWidget {
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
+                  children: const [
                     SizedBox(height: 24),
                     Text(
                       'Dostępna jest nowa wersja aplikacji',
@@ -72,7 +80,7 @@ class UpdateScreen extends StatelessWidget {
                     Text(
                       'Zaktualizuj aplikację, aby korzystać z najnowszych funkcji i ulepszeń',
                       style: TextStyle(
-                        color: Colors.white.withOpacity(0.9),
+                        color: Colors.white70,
                         fontSize: 14,
                         height: 1.5,
                       ),
@@ -80,15 +88,14 @@ class UpdateScreen extends StatelessWidget {
                   ],
                 ),
               ),
-              Spacer(),
-              // Update button
+              const Spacer(),
               SizedBox(
                 width: double.infinity,
                 height: 56,
                 child: ElevatedButton(
                   onPressed: _updateApp,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Color(0xFF8B5CF6),
+                    backgroundColor: const Color(0xFF8B5CF6),
                     foregroundColor: Colors.white,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(16),
@@ -97,7 +104,7 @@ class UpdateScreen extends StatelessWidget {
                   ),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
+                    children: const [
                       Icon(Icons.download_rounded, size: 24),
                       SizedBox(width: 12),
                       Text(
@@ -111,8 +118,7 @@ class UpdateScreen extends StatelessWidget {
                   ),
                 ),
               ),
-              SizedBox(height: 16),
-              // Skip button
+              const SizedBox(height: 16),
               SizedBox(
                 width: double.infinity,
                 height: 56,
@@ -121,15 +127,15 @@ class UpdateScreen extends StatelessWidget {
                     Navigator.of(context).pop();
                   },
                   style: TextButton.styleFrom(
-                    foregroundColor: Colors.white.withOpacity(0.7),
+                    foregroundColor: Colors.white70,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(16),
                     ),
                   ),
-                  child: Container()
+                  child: Container(),
                 ),
               ),
-              SizedBox(height: 24),
+              const SizedBox(height: 24),
             ],
           ),
         ),

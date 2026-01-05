@@ -3,7 +3,6 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
-import 'package:uuid/uuid.dart';
 import 'package:vape_me/utils/firebase_messaging.dart';
 
 import '../../providers/auth_provider.dart';
@@ -64,9 +63,10 @@ class _OTPVerificationScreenState extends State<OTPVerificationScreen> {
     );
 
     if (!mounted) return;
-
+    if (authProvider.user?.uid==null) return;
     if (success) {
-      await _handleUserData();
+      
+      await _handleUserData(authProvider.user!.uid);
     } else {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
@@ -93,10 +93,10 @@ Future<void> requestNotificationPermission() async {
   } else {
     print('User declined or has not accepted permission');
   }}
-  Future<void> _handleUserData() async {
+  Future<void> _handleUserData(userID) async {
     try {
       if (widget.name != null && widget.email != null) {
-        await _createNewUser();
+        await _createNewUser(userID);
       } else {
         await _loadExistingUser();
       }
@@ -114,13 +114,11 @@ Future<void> requestNotificationPermission() async {
     }
   }
 
-  Future<void> _createNewUser() async {
-    final uuid = Uuid();
-    final randomUUID = uuid.v4();
+  Future<void> _createNewUser(userID) async {
     final token = await FirebaseMessagingService().getToken();
 
     final user = UserModel(
-      uid: randomUUID,
+      uid: userID,
       name: widget.name!,
       email: widget.email!,
       phoneNumber: widget.phoneNumber,
