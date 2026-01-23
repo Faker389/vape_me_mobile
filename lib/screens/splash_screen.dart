@@ -275,7 +275,7 @@ void _navigateToNextScreen() async {
                               ],
                             ).createShader(bounds),
                             child: const Text(
-                              'Juicer',
+                              'Vape me',
                               // 'Vape Me',
                               style: TextStyle(
                                 fontSize: 48,

@@ -31,7 +31,7 @@ void startUserListener() {
     // Listen to user document changes
     _userSubscription = _firestore
         .collection('users')
-        .doc(user.uid)
+        .doc(user.phoneNumber)
         .snapshots()
         .listen(
       (snapshot) {

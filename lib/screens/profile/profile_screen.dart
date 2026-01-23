@@ -4,7 +4,7 @@ import 'package:vape_me/providers/user_provider.dart';
 import 'package:vape_me/screens/UpdateScreen.dart';
 import 'package:vape_me/screens/coupons/active_coupons_screen.dart';
 import 'package:vape_me/utils/AppVersionHolder.dart';
-
+import 'package:vape_me/utils/globals.dart';
 import '../../providers/auth_provider.dart';
 import '../../utils/theme.dart';
 import 'edit_profile_screen.dart';
@@ -280,6 +280,8 @@ void _checkVersion() {
                           ),
                           const SizedBox(height: 32),
                           _buildSignOutButton(context),
+                          const SizedBox(height: 16),
+                          _buildDeleteButton(context),
                           const SizedBox(height: 16),
                         ],
                       ),
@@ -615,7 +617,55 @@ void _checkVersion() {
       ),
     );
   }
-
+ Widget _buildDeleteButton(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(16),
+        gradient: LinearGradient(
+          colors: [
+            AppTheme.accentRed.withOpacity(0.8),
+            AppTheme.accentRed,
+          ],
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: AppTheme.accentRed.withOpacity(0.4),
+            blurRadius: 15,
+            offset: const Offset(0, 8),
+          ),
+        ],
+      ),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          borderRadius: BorderRadius.circular(16),
+          onTap: () => _showDeleteAccountDialog(context),
+          child: Container(
+            padding: const EdgeInsets.symmetric(vertical: 16),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: const [
+                Icon(
+                  Icons.delete,
+                  color: Colors.white,
+                ),
+                SizedBox(width: 12),
+                Text(
+                  'Usuń konto',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+               
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
   Widget _buildSignOutButton(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
@@ -657,6 +707,7 @@ void _checkVersion() {
                     fontWeight: FontWeight.w600,
                   ),
                 ),
+               
               ],
             ),
           ),
@@ -766,4 +817,175 @@ void _checkVersion() {
       ),
     );
   }
+  
+}
+void _showDeleteAccountDialog(BuildContext context) {
+  final TextEditingController controller = TextEditingController();
+  bool canDelete = false;
+
+  showDialog(
+    context: context,
+    barrierDismissible: false,
+    builder: (dialogContext) {
+      return StatefulBuilder(
+        builder: (context, setState) {
+          return AlertDialog(
+            backgroundColor: AppTheme.cardBackground,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
+            ),
+            title: Row(
+              children: [
+                Icon(Icons.warning_amber_rounded,
+                    color: AppTheme.accentRed),
+                const SizedBox(width: 12),
+                const Text(
+                  'Usuń konto',
+                  style: TextStyle(color: AppTheme.textPrimary),
+                ),
+              ],
+            ),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  'Ta operacja jest nieodwracalna.\n'
+                  'Wszystkie Twoje dane zostaną trwale usunięte.',
+                  style: TextStyle(color: AppTheme.textSecondary),
+                ),
+                const SizedBox(height: 16),
+                const Text(
+                  'Aby potwierdzić, wpisz:',
+                  style: TextStyle(fontSize: 13),
+                ),
+                const SizedBox(height: 6),
+                const Text(
+                  'usun moje konto',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: AppTheme.accentRed,
+                  ),
+                ),
+                const SizedBox(height: 12),
+                TextField(
+                  controller: controller,
+                  onChanged: (value) {
+                    setState(() {
+                      canDelete =
+                          value.trim().toLowerCase() == 'usun moje konto';
+                    });
+                  },
+                  decoration: InputDecoration(
+                    hintText: 'Wpisz frazę potwierdzającą',
+                    filled: true,
+                    fillColor:
+                        AppTheme.textSecondary.withOpacity(0.05),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(dialogContext).pop(),
+                child: const Text(
+                  'Anuluj',
+                  style: TextStyle(color: AppTheme.textSecondary),
+                ),
+              ),
+              ElevatedButton(
+                onPressed: canDelete
+                    ? () async {
+                        Navigator.of(dialogContext).pop();
+                        await _deleteAccount();
+                      }
+                    : null,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppTheme.accentRed,
+                  disabledBackgroundColor:
+                      AppTheme.accentRed.withOpacity(0.3),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                ),
+                child: const Text(
+                  'Usuń konto',
+                  style: TextStyle(color: Colors.white),
+                ),
+              ),
+            ],
+          );
+        },
+      );
+    },
+  );
+}
+Future<void> _deleteAccount() async {
+  final BuildContext? context = navigatorKey.currentContext; // use global context
+  if (context == null) return; // safe check
+
+  final authProvider = Provider.of<AuthProvider>(context, listen: false);
+
+  // Show loader
+  showDialog(
+    context: context,
+    barrierDismissible: false,
+    builder: (_) => const Center(
+      child: CircularProgressIndicator(
+        color: AppTheme.primaryPurple,
+      ),
+    ),
+  );
+
+  print("poczatek ludzia");
+  await authProvider.deleteAccount();
+  print("poczatek ludzia 2");
+
+  Navigator.of(context).pop(); // close loader
+
+  final error = authProvider.errorMessage;
+
+  if (error == 'REAUTH_REQUIRED') {
+    _showReauthRequiredDialog(); // also use global context here
+    return;
+  }
+
+  print("poczatek ludzia 3");
+  if (error != null) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(error)),
+    );
+    return;
+  }
+
+  await UserStorage.clearUser();
+  print("poczatek ludzia 4");
+
+  Navigator.of(context).pushAndRemoveUntil(
+    MaterialPageRoute(builder: (_) => const WelcomeScreen()),
+    (_) => false,
+  );
+}
+void _showReauthRequiredDialog() {
+  final BuildContext? context = navigatorKey.currentContext;
+  if (context == null) return;
+
+  showDialog(
+    context: context,
+    builder: (_) => AlertDialog(
+      title: const Text('Re-authentication required'),
+      content: const Text(
+        'Please log in again to delete your account.',
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.of(context).pop(),
+          child: const Text('OK'),
+        ),
+      ],
+    ),
+  );
 }
