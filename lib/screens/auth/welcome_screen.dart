@@ -115,7 +115,7 @@ class _WelcomeScreenState extends State<WelcomeScreen>
                       colors: [AppTheme.primaryPurple, AppTheme.primaryPink],
                     ).createShader(bounds),
                     child: const Text(
-                      'Witamy w Vape Me',
+                      'Witamy w VPoints',
                       // 'Witamy w Vape Me',
                       textAlign: TextAlign.center,
                       style: TextStyle(

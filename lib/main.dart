@@ -70,7 +70,7 @@
         const NotificationDetails(
           android: AndroidNotificationDetails(
             FirebaseMessagingService.CHANNEL_ID,
-            'Vape Me Notifications',
+            'VPoints Notifications',
             importance: Importance.high,
             priority: Priority.high,
           ),
@@ -113,7 +113,7 @@
             }
             int value =firebaseUser!=null? 1:2;
             return MaterialApp(
-              title: 'Vape Me',
+              title: 'VPoints',
               debugShowCheckedModeBanner: false,
               theme: AppTheme.darkTheme,
               home:VersionGate(index:value),

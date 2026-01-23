@@ -225,7 +225,7 @@ void _checkVersion() {
                           _buildModernMenuItem(
                             context,
                             icon: Icons.swap_horiz,
-                            title: 'Transfer buszków',
+                            title: 'Transfer punktów',
                             subtitle:
                                 'Przekaż punkty innym użytkownikom',
                             gradient: const LinearGradient(
@@ -483,7 +483,7 @@ void _checkVersion() {
                         ),
                         const SizedBox(width: 10),
                         Text(
-                          '${user.points} buszków',
+                          '${user.points} punktów',
                           style: const TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,

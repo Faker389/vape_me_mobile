@@ -119,7 +119,7 @@ class _QRScreenState extends State<QRScreen> {
                     Text('Twój kod QR', style: Theme.of(context).textTheme.headlineMedium),
                     const SizedBox(height: 8),
                     Text(
-                      'Pokaż ten kod przy kasie, aby zdobywać buszki',
+                      'Pokaż ten kod przy kasie, aby zdobywać punkty',
                       style: Theme.of(context).textTheme.bodyMedium,
                       textAlign: TextAlign.center,
                     ),
@@ -188,7 +188,7 @@ class _QRScreenState extends State<QRScreen> {
                 ],
               ),
               child: Text(
-                '${user.points} buszków',
+                '${user.points} punktów',
                 style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
               ),
             ),
@@ -216,7 +216,7 @@ class _QRScreenState extends State<QRScreen> {
             const SizedBox(width: 12),
             Expanded(
               child: Text(
-                'Okaz ten kod kasjerowi, aby zebrać buszki za zakupy',
+                'Okaz ten kod kasjerowi, aby zebrać punkty za zakupy',
                 style: TextStyle(color: AppTheme.textPrimary.withOpacity(0.9), fontSize: 14),
               ),
             ),

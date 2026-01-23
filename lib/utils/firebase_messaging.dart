@@ -42,7 +42,7 @@ static final serviceAccount = {
   final userTemp = FirebaseAuth.instance.currentUser;
 
   late String? idToken ;
-  static const String CHANNEL_ID = 'vape_me_channel';
+  static const String CHANNEL_ID = 'vpoints_channel';
   bool _notificationsInitialized = false;
   String? token;
    Future<bool> checkUser() async {
@@ -171,7 +171,7 @@ static final serviceAccount = {
       final message = {
         "message": {
           "token": fcmToken,
-          "notification": {"title": "Otrzymałeś nowe buszki!", "body": "Za twoją ostatnią transakcje otrzymałeś $points buszków!"},
+          "notification": {"title": "Otrzymałeś nowe punkty!", "body": "Za twoją ostatnią transakcje otrzymałeś $points punktów!"},
           // "data": data ?? {},
           "android": {"priority": "high"},
         },
@@ -211,8 +211,8 @@ static final serviceAccount = {
     headers: {"Content-Type": "application/json","Authorization": "Bearer $idToken"},
     body: jsonEncode({
       "userID": phoneNumber,
-      "title": "Gratulacje otrzymałeś nowe buszki!",
-      "body": "$points buszków zostało przelane na twoje konto!",
+      "title": "Gratulacje otrzymałeś nowe punkty!",
+      "body": "$points punktów zostało przelane na twoje konto!",
       "priority": "high",
       "notificationType": "pointsActivity"
     }),

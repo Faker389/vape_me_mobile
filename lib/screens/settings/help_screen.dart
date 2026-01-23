@@ -129,21 +129,21 @@ static Future<bool> checkUser(AuthProvider authProvider)async{
                     context,
                     icon: Icons.email,
                     title: 'Email',
-                    subtitle: 'vapeme123321@gmail.com',
+                    subtitle: 'michal200614@gmail.com',
                     color: const Color(0xFF667eea),
-                    onTap: () => _launchEmail('vapeme123321@gmail.com'),
+                    onTap: () => _launchEmail('michal200614@gmail.com'),
                   ),
                   const SizedBox(height: 12),
                   
-                  _buildContactCard(
-                    context,
-                    icon: Icons.phone,
-                    title: 'Telefon',
-                    subtitle: '+48 123 456 789',
-                    color: const Color(0xFF43e97b),
-                    onTap: () => _launchPhone('+48123456789'),
-                  ),
-                  const SizedBox(height: 12),
+                  // _buildContactCard(
+                  //   context,
+                  //   icon: Icons.phone,
+                  //   title: 'Telefon',
+                  //   subtitle: '+48 123 456 789',
+                  //   color: const Color(0xFF43e97b),
+                  //   onTap: () => _launchPhone('+48123456789'),
+                  // ),
+                  // const SizedBox(height: 12),
                   
                   const SizedBox(height: 32),
                   

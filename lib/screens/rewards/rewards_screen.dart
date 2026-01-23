@@ -558,7 +558,7 @@ class RewardCardSimple extends StatelessWidget {
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Text(
-                    '${reward.pointsCost} buszków',
+                    '${reward.pointsCost} punktów',
                     style: const TextStyle(
                       color: Colors.white,
                       fontSize: 12,
@@ -641,10 +641,10 @@ class RewardModalContent extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 const Text(
-                  'Wymagane buszki',
+                  'Wymagane punkty',
                   style: TextStyle(color: Colors.white, fontSize: 16),
                 ),
-                Text('${reward.pointsCost} buszków',
+                Text('${reward.pointsCost} punktów',
                     style: const TextStyle(
                         color: Colors.white,
                         fontSize: 20,
@@ -677,7 +677,7 @@ class RewardModalContent extends StatelessWidget {
                   ),
                   child: Text(canRedeem
                       ? 'Odbierz teraz'
-                      : 'Brak wystarczającej liczby buszków (${user.points}/${reward.pointsCost})'),
+                      : 'Brak wystarczającej liczby punktów (${user.points}/${reward.pointsCost})'),
                 ),
               );
             },

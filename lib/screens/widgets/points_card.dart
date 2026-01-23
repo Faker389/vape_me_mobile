@@ -42,7 +42,7 @@ class PointsCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Twoje buszki',
+                      'Twoje punkty',
                       style: TextStyle(
                         color: Colors.white.withOpacity(0.9),
                         fontSize: 14,
@@ -67,7 +67,7 @@ class PointsCard extends StatelessWidget {
                         Padding(
                           padding: const EdgeInsets.only(bottom: 8),
                           child: Text(
-                            points==1?"buszek":points>=2&&points<=4?"buszki":"buszków",
+                            points==1?"punkt":points>=2&&points<=4?"punkty":"punktów",
                             style: TextStyle(
                               color: Colors.white.withOpacity(0.8),
                               fontSize: 20,

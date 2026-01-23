@@ -297,8 +297,8 @@ Future<void> requestNotificationPermission() async {
                         const SizedBox(height: 12),
                         const SizedBox(height: 12),
                         _buildSettingCard(
-                          'Aktywność buszków',
-                          'Informacje o zmianach buszków',
+                          'Aktywność punktów',
+                          'Informacje o zmianach punktów',
                           Icons.stars,
                           _pointsActivity,
                           (value) => setState(() => _pointsActivity = value),

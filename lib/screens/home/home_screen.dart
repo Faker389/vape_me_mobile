@@ -87,7 +87,7 @@ void _checkVersion() {
   @override
   void initState() {
     super.initState();
-    _checkAgeVerification();
+    // _checkAgeVerification();
     loadUser();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) {

@@ -115,7 +115,7 @@ static Future<bool> checkUser(AuthProvider authProvider)async{
                   // Sections
                   _buildSection(
                     '1. Wprowadzenie',
-                    'Niniejsza Polityka Prywatności opisuje, w jaki sposób gromadzimy, wykorzystujemy, przechowujemy i chronimy Twoje dane osobowe podczas korzystania z aplikacji Żappka.',
+                    'Niniejsza Polityka Prywatności opisuje, w jaki sposób gromadzimy, wykorzystujemy, przechowujemy i chronimy Twoje dane osobowe podczas korzystania z aplikacji VPoints.',
                   ),
                   
                   _buildSection(
@@ -174,8 +174,7 @@ static Future<bool> checkUser(AuthProvider authProvider)async{
                   _buildSection(
                     '9. Kontakt',
                     'W razie pytań dotyczących Polityki Prywatności, skontaktuj się z nami:\n\n'
-                    'Email: vapeme123321@gmail.coml\n'
-                    'Telefon: +48 123 456 789',
+                    'Email: michal20064@gmail.com\n'
                   ),
                   
                   const SizedBox(height: 24),

@@ -145,7 +145,7 @@ class _TransferPointsScreenState extends State<TransferPointsScreen> {
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      'Przekazano $points buszków',
+                      'Przekazano $points punktów',
                       style: const TextStyle(
                         color: AppTheme.textSecondary,
                         fontSize: 14,
@@ -194,7 +194,7 @@ class _TransferPointsScreenState extends State<TransferPointsScreen> {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
-              content: Text('Nie masz wystarczającej liczby buszków'),
+              content: Text('Nie masz wystarczającej liczby punktów'),
               backgroundColor: AppTheme.accentRed,
             ),
           );
@@ -208,7 +208,7 @@ class _TransferPointsScreenState extends State<TransferPointsScreen> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-            content: Text('Błąd podczas transferu buszków. Spróbuj ponownie.'),
+            content: Text('Błąd podczas transferu punktów. Spróbuj ponownie.'),
             backgroundColor: AppTheme.accentRed,
           ),
         );
@@ -261,7 +261,7 @@ class _TransferPointsScreenState extends State<TransferPointsScreen> {
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: AppBar(
-        title: const Text('Transfer buszków'),
+        title: const Text('Transfer punktów'),
         backgroundColor: Colors.transparent,
         elevation: 0,
       ),
@@ -330,7 +330,7 @@ class _TransferPointsScreenState extends State<TransferPointsScreen> {
                                 ),
                                 const SizedBox(height: 6),
                                 Text(
-                                  '$availablePoints buszków',
+                                  '$availablePoints punktów',
                                   style: const TextStyle(
                                     color: Colors.white,
                                     fontSize: 32,
@@ -440,7 +440,7 @@ class _TransferPointsScreenState extends State<TransferPointsScreen> {
                     
                     // Points Amount
                     const Text(
-                      'Liczba buszków',
+                      'Liczba punktów',
                       style: TextStyle(
                         color: AppTheme.textPrimary,
                         fontSize: 16,
@@ -464,7 +464,7 @@ class _TransferPointsScreenState extends State<TransferPointsScreen> {
                           fontSize: 16,
                         ),
                         decoration: InputDecoration(
-                          hintText: 'Wprowadź liczbę buszków',
+                          hintText: 'Wprowadź liczbę punktów',
                           hintStyle: TextStyle(
                             color: AppTheme.textSecondary.withOpacity(0.5),
                           ),
@@ -491,14 +491,14 @@ class _TransferPointsScreenState extends State<TransferPointsScreen> {
                         ],
                         validator: (value) {
                           if (value == null || value.isEmpty) {
-                            return 'Podaj liczbę buszków do przekazania';
+                            return 'Podaj liczbę punktów do przekazania';
                           }
                           final points = int.tryParse(value);
                           if (points == null || points <= 0) {
-                            return 'Podaj prawidłową liczbę buszków';
+                            return 'Podaj prawidłową liczbę punktów';
                           }
                           if (points > availablePoints) {
-                            return 'Nie masz wystarczającej liczby buszków';
+                            return 'Nie masz wystarczającej liczby punktów';
                           }
                           return null;
                         },
